@@ -1,0 +1,55 @@
+var gulp = require('gulp'),
+	// 引用的合并构建
+    useref = require('gulp-useref'),
+	// JS压缩
+    uglify = require('gulp-uglify'),
+	// CSS压缩
+    minifyCSS = require('gulp-minify-css'),
+	// 文件类型判断
+    gulpIf = require('gulp-if'),
+	// HTML压缩
+	minifyHTML = require('gulp-html-minify'),
+	// 图片压缩
+	imagemin = require('gulp-imagemin');
+
+gulp.task('build', function () {
+    return gulp.src('./dev/*.html')
+        .pipe( useref() )
+        /* 挑选出其中的js文件 */
+        .pipe( gulpIf('*.js',uglify()) )
+        /* 挑选出其中的css文件 */
+        .pipe( gulpIf('*.css',minifyCSS()) )
+		// 再次执行useref()
+        .pipe( useref() )
+		// 压缩HTML
+		.pipe( minifyHTML() )
+		// 输出处理后的内容
+        .pipe( gulp.dest('./build') );
+});
+
+// 图片优化
+gulp.task('imagemin',function() {
+	return gulp.src(['./dev/images/*','!./dev/images/*.ico'])
+       .pipe(imagemin({
+            optimizationLevel: 7, //类型：Number  默认：3  取值范围：0-7（优化等级）
+            progressive: true, //类型：Boolean 默认：false 无损压缩jpg图片
+            interlaced: true, //类型：Boolean 默认：false 隔行扫描gif进行渲染
+            multipass: true //类型：Boolean 默认：false 多次优化svg直到完全优化
+        }))
+       .pipe(gulp.dest('./build/images'));
+});
+
+// 默认执行全部任务
+gulp.task('default',['build', 'imagemin']);
+
+
+
+
+
+
+
+
+
+
+
+

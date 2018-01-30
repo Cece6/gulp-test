@@ -1,0 +1,50 @@
+const gulp = require('gulp');
+const cssMin = require('gulp-minify-css');
+const autoprefixer = require('gulp-autoprefixer');
+const uglify = require('gulp-uglify');
+const imagemin = require('gulp-imagemin')
+const browserSync = require('browser-sync')
+
+
+
+gulp.task('testCssMin',function(){
+    gulp.src('src/style/*.css')
+    .pipe(cssMin())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('dist/src/style'))
+})
+
+gulp.task('html',function(){
+    gulp.src('src/*.html')
+    .pipe(gulp.dest('dist/src'))
+});
+
+gulp.task('bootstrap',function(){
+    gulp.src('src/bootstrap/**/*')
+    .pipe(gulp.dest('dist/src/bootstrap'))
+});
+
+gulp.task('js',function(){
+    gulp.src('src/js/**/*')
+    .pipe(gulp.dest('dist/src/js'))
+});
+
+gulp.task('vendor',function(){
+    gulp.src('src/vendor/**/*')
+    .pipe(gulp.dest('dist/src/vendor'))
+});
+
+gulp.task('testImagemin',function(){
+    gulp.src('src/images/**/*.{png,jpg,gif}')
+    .pipe(imagemin({
+        optimizationLevel: 7, //类型：Number  默认：3  取值范围：0-7（优化等级）
+        progressive: true, //类型：Boolean 默认：false 无损压缩jpg图片
+        interlaced: true, //类型：Boolean 默认：false 隔行扫描gif进行渲染
+        multipass: true //类型：Boolean 默认：false 多次优化svg直到完全优化
+    }))
+    .pipe(gulp.dest('dist/src/images'))
+})
+
+
+
+gulp.task('build',['testCssMin','testImagemin','html','bootstrap','js','vendor']);
